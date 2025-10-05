@@ -1,10 +1,13 @@
 
-import { Component, createSignal, Show, For, onCleanup, onMount } from 'solid-js';
+import { Component, createSignal, Show, onMount } from 'solid-js';
 import styles from './App.module.css';
-import { platforms, PlatformConfig, Rule } from './rsshub-rules';
+import { platforms, PlatformConfig } from './rsshub-rules';
 import { detectParams } from './platform-detectors';
+
 import rsshubLogo from './icons/rsshub-logo';
-import ClipboardJS from 'clipboard';
+
+
+import Panel from './components/Panel';
 
 const [showPanel, setShowPanel] = createSignal(false);
 const [activePlatform, setActivePlatform] = createSignal<PlatformConfig>(platforms[0]);
@@ -19,95 +22,79 @@ function detectPlatform(): PlatformConfig | null {
   return null;
 }
 
-// 复制按钮初始化
-function setupClipboard() {
-  const clipboard = new ClipboardJS('.copy-btn');
-  clipboard.on('success', () => {
-    setToast('已复制');
-    setTimeout(() => setToast(''), 1200);
-  });
-  clipboard.on('error', () => {
-    setToast('复制失败');
-    setTimeout(() => setToast(''), 1200);
-  });
-  onCleanup(() => clipboard.destroy());
-}
 
 const App: Component = () => {
   // 当前平台参数
   const [params, setParams] = createSignal<Record<string, string>>({});
+  // 平台tab展开控制
+  const [showAllPlatforms, setShowAllPlatforms] = createSignal(false);
+  // 记录初始自动识别的平台id
+  // const [detectedPlatformId, setDetectedPlatformId] = createSignal<string | null>(null); // 已不再使用
+
   // 初始化平台，优先自动识别，否则默认第一个
   onMount(() => {
     const detected = detectPlatform();
-    if (detected) setActivePlatform(detected);
-    // 初始参数
+    if (detected) {
+      setActivePlatform(detected);
+    }
     setParams(detectParams((detected || platforms[0]).id));
   });
   // 切换平台时自动提取参数
   const handleTabClick = (p: PlatformConfig) => {
     setActivePlatform(p);
     setParams(detectParams(p.id));
+    setShowAllPlatforms(true); // 一旦手动切换，自动展开所有平台tab
   };
-  // 初始化clipboard
-  setupClipboard();
+
+
+  // 过滤出有数据的规则
+  const matchedRules = () => activePlatform().rules.filter(rule => {
+    const link = rule.genLink(params());
+    // 只要有参数被填充（不含占位符）
+    return !/\{.+?\}/.test(link);
+  });
+  // 若无任何规则匹配，则不显示fab
+  if (matchedRules().length === 0) return null;
+
+
+  // 关闭对话框（点击外部或按钮）
+  const handleClose = () => setShowPanel(false);
+  // 外部点击关闭
+  const onBgClick = (e: MouseEvent) => {
+    if (e.target === e.currentTarget) handleClose();
+  };
 
   return (
     <>
-      {/* 悬浮按钮 */}
-      <div class={styles.fab} onClick={() => setShowPanel(true)} title="RSSHub订阅">
-        <span innerHTML={rsshubLogo} />
-      </div>
-      {/* 侧边栏面板 */}
+      {/* 悬浮按钮，仅有匹配规则时显示 */}
+      <Show when={matchedRules().length > 0 && !showPanel()}>
+        <div class={styles.fab} onClick={() => setShowPanel(true)} title="RSSHub订阅">
+          <span innerHTML={rsshubLogo} />
+        </div>
+      </Show>
+      {/* 对话框面板 */}
       <Show when={showPanel()}>
-        <div class={styles.panelBg} onClick={() => setShowPanel(false)} />
-        <aside class={styles.panel}>
-          <header class={styles.panelHeader}>
-            <span innerHTML={rsshubLogo} style={{ width: '32px', height: '32px', display: 'inline-block' }} />
-            <span>可订阅源</span>
-            <button class={styles.closeBtn} onClick={() => setShowPanel(false)}>×</button>
-          </header>
-          <nav class={styles.tabs}>
-            <For each={platforms}>
-              {p => (
-                <button
-                  class={p.id === activePlatform().id ? styles.tabActive : ''}
-                  onClick={() => handleTabClick(p)}
-                >
-                  <span innerHTML={p.icon} style={{ width: '24px', height: '24px', display: 'inline-block' }} />
-                  {p.name}
-                </button>
-              )}
-            </For>
-          </nav>
-          <main class={styles.rules}>
-            <For each={activePlatform().rules}>
-              {rule => <RuleItem rule={rule} params={params()} />}
-            </For>
-          </main>
-        </aside>
+        <Panel
+          showAllPlatforms={showAllPlatforms()}
+          platforms={platforms}
+          activePlatform={activePlatform()}
+          onTabClick={handleTabClick}
+          matchedRules={matchedRules()}
+          params={params()}
+          onClose={handleClose}
+          onBgClick={onBgClick}
+          onCopy={success => {
+            console.log('App onCopy 回调', success);
+            setToast(success ? '已复制' : '复制失败');
+            setTimeout(() => setToast(''), 1200);
+          }}
+        />
       </Show>
       {/* Toast提示 */}
       <Show when={toast()}>
         <div class={styles.toast}>{toast()}</div>
       </Show>
     </>
-  );
-};
-
-const RuleItem: Component<{ rule: Rule; params: Record<string, string> }> = (props) => {
-  // 动态参数优先，若无则用默认
-  const link = props.rule.genLink(props.params);
-  return (
-    <div class={styles.ruleItem}>
-      <div class={styles.ruleTitle}>
-        <a href={props.rule.doc} target="_blank" rel="noopener">{props.rule.name}</a>
-      </div>
-      <div class={styles.ruleDesc}>{props.rule.desc}</div>
-      <div class={styles.ruleLinkRow}>
-        <span class={styles.ruleLink}>{link}</span>
-        <button class={`copy-btn ${styles.copyBtn}`} data-clipboard-text={link}>复制</button>
-      </div>
-    </div>
   );
 };
 

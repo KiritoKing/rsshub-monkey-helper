@@ -1,29 +1,3 @@
-
-/* 悬浮按钮 */
-/* 悬浮按钮：不展开时不占用页面空间，仅自身可点 */
-.fab {
-  position: fixed;
-  right: 32px;
-  bottom: 32px;
-  z-index: 10000;
-  width: 56px;
-  height: 56px;
-  background: var(--fab-bg, #fff);
-  border-radius: 50%;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: box-shadow 0.2s;
-  pointer-events: auto !important;
-  /* 彻底不占位，所有交互只在按钮本身 */
-}
-.fab:hover {
-  box-shadow: 0 4px 24px rgba(0,0,0,0.28);
-}
-
-/* 侧边栏背景遮罩 */
 .panelBg {
   position: fixed;
   inset: 0;
@@ -31,10 +5,6 @@
   z-index: 2147483646;
   transition: background 0.2s;
 }
-
-/* 侧边栏 */
-/* 侧边栏：暗黑模式适配，阴影更柔和 */
-/* 对话框样式 */
 .dialog.panel {
   position: fixed;
   left: 50%;
@@ -58,12 +28,6 @@
   from { opacity: 0; transform: scale(0.85) translate(-50%, -50%); }
   to { opacity: 1; transform: scale(1) translate(-50%, -50%); }
 }
-@keyframes slideIn {
-  from { right: -340px; }
-  to { right: 0; }
-}
-
-/* 标题区：间距更均匀 */
 .panelHeader {
   display: flex;
   align-items: center;
@@ -73,33 +37,6 @@
   font-size: 20px;
   font-weight: 600;
   color: var(--panel-header-color, #222);
-}
-/* 展开按钮（下拉箭头）样式 */
-.expandIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 15px;
-  margin-top: 2px;
-  margin-left: 2px;
-  color: #888;
-  transform: rotate(0deg);
-  transition: transform 0.2s;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --fab-bg: #23272e;
-    --panel-bg: #181a20;
-    --panel-border: #23242a;
-    --tab-color: #eee;
-    --rule-bg: #23242a;
-    --rule-title: #fff;
-    --rule-desc: #bbb;
-    --rule-link-bg: #23272e;
-    --rule-link: #eee;
-    --close-color: #aaa;
-    --panel-header-color: #fff;
-  }
 }
 .closeBtn {
   margin-left: auto;
@@ -113,7 +50,6 @@
 .closeBtn:hover {
   color: #f44336;
 }
-
 .tabs {
   display: flex;
   gap: 16px;
@@ -179,44 +115,19 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.18);
   pointer-events: none;
 }
-
-
+.expandIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  margin-top: 2px;
+  margin-left: 2px;
+  color: #888;
+  transform: rotate(0deg);
+  transition: transform 0.2s;
+}
 .rules {
   flex: 1;
   overflow-y: auto;
   padding: 20px 24px 32px 24px;
-}
-
-.toast {
-  position: fixed;
-  bottom: 100px;
-  right: 40px;
-  background: #222;
-  color: #fff;
-  padding: 10px 22px;
-  border-radius: 8px;
-  font-size: 15px;
-  z-index: 2147483647;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
-  animation: fadeIn 0.2s;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* 暗黑模式适配 */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --fab-bg: #23272e;
-    --panel-bg: #181a20;
-    --panel-border: #23242a;
-    --tab-color: #eee;
-    --rule-bg: #23242a;
-    --rule-title: #fff;
-    --rule-desc: #bbb;
-    --rule-link-bg: #23272e;
-    --rule-link: #eee;
-    --close-color: #aaa;
-  }
 }
