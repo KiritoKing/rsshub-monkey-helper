@@ -13,7 +13,7 @@ export default defineConfig({
           'en': 'RSSHub Subscription Helper',
           'zh-CN': 'RSSHub 订阅助手',
         },
-        namespace: 'github.com/chlorinec/rsshub-sub-helper',
+        namespace: 'github.com/chlorinec/rsshub-monkey-helper',
         version: '1.0.0',
         description: {
           '': '快速生成并复制RSSHub订阅链接，支持Bilibili、YouTube、X等主流平台',
@@ -40,10 +40,10 @@ export default defineConfig({
         'run-at': 'document-end',
         noframes: true,
         license: 'MIT',
-        homepage: 'https://github.com/chlorinec/rsshub-sub-helper',
-        supportURL: 'https://github.com/chlorinec/rsshub-sub-helper/issues',
-        updateURL: 'https://github.com/chlorinec/rsshub-sub-helper/releases/latest/download/rsshub-sub-helper.meta.js',
-        downloadURL: 'https://github.com/chlorinec/rsshub-sub-helper/releases/latest/download/rsshub-sub-helper.user.js',
+        homepage: 'https://github.com/chlorinec/rsshub-monkey-helper',
+        supportURL: 'https://github.com/chlorinec/rsshub-monkey-helper/issues',
+        updateURL: 'https://github.com/chlorinec/rsshub-monkey-helper/releases/latest/download/rsshub-monkey-helper.meta.js',
+        downloadURL: 'https://github.com/chlorinec/rsshub-monkey-helper/releases/latest/download/rsshub-monkey-helper.user.js',
       },
       server: {
         open: true,
