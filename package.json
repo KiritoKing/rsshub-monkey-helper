@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:watch": "vite build --watch",
     "preview": "vite preview"
   },
   "devDependencies": {
@@ -15,6 +16,8 @@
     "vite-plugin-solid": "^2.11.8"
   },
   "dependencies": {
+    "clipboard": "^2.0.11",
+    "simple-icons": "^15.16.1",
     "solid-js": "^1.9.9"
   }
 }
