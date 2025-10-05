@@ -65,7 +65,7 @@ export const platforms: PlatformConfig[] = [
   {
     id: 'youtube',
     name: 'YouTube',
-  icon: youtubeIcon,
+    icon: youtubeIcon,
     rules: [
       {
         id: 'user',
@@ -88,7 +88,7 @@ export const platforms: PlatformConfig[] = [
   {
     id: 'x',
     name: 'X（Twitter）',
-  icon: xIcon,
+    icon: xIcon,
     rules: [
       {
         id: 'user',

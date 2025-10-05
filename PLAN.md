@@ -9,16 +9,19 @@
 ## 支持平台及规则
 
 ### 1. Bilibili
+
 - UP主投稿：/bilibili/user/video/:uid
 - UP主所有视频：/bilibili/user/video-all/:uid
 - 排行榜：/bilibili/ranking/:rid_index?
 - 周推：/bilibili/weekly
 
 ### 2. YouTube
+
 - 频道（@handle）：/youtube/user/:username（如@JFlaMusic）
 - 播放列表：/youtube/playlist/:id
 
 ### 3. X（Twitter）
+
 - 用户推文：/x/user/:id
 - 通用规则：/x/:routeParams
 

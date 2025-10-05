@@ -4,7 +4,17 @@
   "version": "1.0.0",
   "type": "module",
   "description": "快速生成并复制RSSHub订阅链接，支持Bilibili、YouTube、X等主流平台的浏览器用户脚本",
-  "keywords": ["userscript", "rsshub", "tampermonkey", "greasemonkey", "rss", "subscription", "bilibili", "youtube", "twitter"],
+  "keywords": [
+    "userscript",
+    "rsshub",
+    "tampermonkey",
+    "greasemonkey",
+    "rss",
+    "subscription",
+    "bilibili",
+    "youtube",
+    "twitter"
+  ],
   "author": "chlorinec",
   "license": "MIT",
   "homepage": "https://github.com/chlorinec/rsshub-monkey-helper",
@@ -19,10 +29,30 @@
     "dev": "vite",
     "build": "vite build",
     "build:watch": "vite build --watch",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "tsc --noEmit",
+    "check-all": "pnpm run type-check && pnpm run lint && pnpm run format:check"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "@eslint/js": "^9.37.0",
+    "@types/eslint__js": "^9.14.0",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@typescript-eslint/parser": "^8.45.0",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-solid": "^0.14.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.3",
+    "prettier": "^3.6.2",
     "typescript": "^5.9.2",
+    "typescript-eslint": "^8.45.0",
     "vite": "^7.1.3",
     "vite-plugin-monkey": "^7.1.1",
     "vite-plugin-solid": "^2.11.8"
@@ -31,5 +61,14 @@
     "clipboard": "^2.0.11",
     "simple-icons": "^15.16.1",
     "solid-js": "^1.9.9"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
   }
 }

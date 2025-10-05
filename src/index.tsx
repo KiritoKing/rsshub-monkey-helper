@@ -5,7 +5,7 @@ import './index.css';
 import App from './App';
 
 render(
-  () => <App />, 
+  () => <App />,
   (() => {
     const app = document.createElement('div');
     // 彻底不占位，不遮挡页面，所有交互交给内部按钮
@@ -18,5 +18,5 @@ render(
     app.style.left = '0';
     document.body.append(app);
     return app;
-  })(),
+  })()
 );

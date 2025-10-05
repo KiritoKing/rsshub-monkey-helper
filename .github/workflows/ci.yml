@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  workflow_call:
+    inputs:
+      run-build:
+        description: 'Whether to run build step'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm run type-check
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Format check
+        run: pnpm run format:check
+
+      - name: Build (optional)
+        if: inputs.run-build == true
+        run: pnpm run build
+
+      - name: Upload artifact
+        if: inputs.run-build == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: userscript
+          path: dist/rsshub-monkey-helper.user.js
+          if-no-files-found: error

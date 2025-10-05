@@ -11,7 +11,9 @@ export function detectBilibiliParams(): Record<string, string> {
   const bvMatch = url.match(/bilibili\.com\/video\/(BV[\w]+)/i);
   if (bvMatch) {
     // 尝试从页面DOM获取UP主uid
-    const upLink = document.querySelector('a.up-name, a.username, a.bili-avatar') as HTMLAnchorElement;
+    const upLink = document.querySelector(
+      'a.up-name, a.username, a.bili-avatar'
+    ) as HTMLAnchorElement;
     if (upLink && upLink.href) {
       const upUid = upLink.href.match(/space\.bilibili\.com\/(\d+)/);
       if (upUid) return { uid: upUid[1] };
@@ -25,10 +27,10 @@ export function detectBilibiliParams(): Record<string, string> {
 export function detectYouTubeParams(): Record<string, string> {
   const url = window.location.href;
   // 频道页 https://www.youtube.com/@handle
-  const handleMatch = url.match(/youtube\.com\/@([\w\-\.]+)/);
-  if (handleMatch) return { username: '@' + handleMatch[1] };
+  const handleMatch = url.match(/youtube.com\/@([\w\-.]+)/);
+  if (handleMatch) return { username: `@${handleMatch[1]}` };
   // 频道ID页 https://www.youtube.com/channel/UCxxxx
-  const channelMatch = url.match(/youtube\.com\/channel\/(UC[\w\-]+)/);
+  const channelMatch = url.match(/youtube.com\/channel\/(UC[\w-]+)/);
   if (channelMatch) return { username: channelMatch[1] };
   // 视频页 https://www.youtube.com/watch?v=xxxx
   // 可通过DOM或API进一步提取
@@ -39,8 +41,19 @@ export function detectYouTubeParams(): Record<string, string> {
 export function detectXParams(): Record<string, string> {
   const url = window.location.href;
   // 用户页 https://x.com/elonmusk 或 https://twitter.com/elonmusk
-  const userMatch = url.match(/(?:x|twitter)\.com\/([\w_]+)/);
-  if (userMatch && !['home','explore','i','notifications','messages','search','settings'].includes(userMatch[1])) {
+  const userMatch = url.match(/(?:x|twitter).com\/([\w_]+)/);
+  if (
+    userMatch &&
+    ![
+      'home',
+      'explore',
+      'i',
+      'notifications',
+      'messages',
+      'search',
+      'settings',
+    ].includes(userMatch[1])
+  ) {
     return { id: userMatch[1] };
   }
   return {};

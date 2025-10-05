@@ -7,52 +7,49 @@ on:
   workflow_dispatch:
 
 jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+    with:
+      run-build: true
+
   build-and-release:
+    needs: ci
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Bun
-      uses: oven-sh/setup-bun@v1
-      with:
-        bun-version: latest
-        
-    - name: Install dependencies
-      run: bun install
-      
-    - name: Build project
-      run: bun run build
-      
-    - name: Get version from package.json
-      id: package-version
-      run: echo "version=$(bun --print 'require("./package.json").version')" >> $GITHUB_OUTPUT
-      
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v${{ steps.package-version.outputs.version }}
-        release_name: Release v${{ steps.package-version.outputs.version }}
-        body: |
-          ## Changes in this Release
-          - Automated release for version ${{ steps.package-version.outputs.version }}
-          
-          ## Installation
-          Click the link below to install the userscript:
-          [Install RSSHub Monkey Helper](https://github.com/${{ github.repository }}/releases/download/v${{ steps.package-version.outputs.version }}/rsshub-monkey-helper.user.js)
-        draft: false
-        prerelease: false
-        
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/rsshub-monkey-helper.user.js
-        asset_name: rsshub-monkey-helper.user.js
-        asset_content_type: application/javascript
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: userscript
+          path: dist
+
+      - name: Read version
+        id: package-version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.package-version.outputs.version }}
+          release_name: Release v${{ steps.package-version.outputs.version }}
+          body: |
+            ## Changes in this Release
+            - Automated release for version ${{ steps.package-version.outputs.version }}
+
+            ## Installation
+            Click the link below to install the userscript:
+            [Install RSSHub Monkey Helper](https://github.com/${{ github.repository }}/releases/download/v${{ steps.package-version.outputs.version }}/rsshub-monkey-helper.user.js)
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/rsshub-monkey-helper.user.js
+          asset_name: rsshub-monkey-helper.user.js
+          asset_content_type: application/javascript

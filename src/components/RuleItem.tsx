@@ -1,5 +1,4 @@
-
-import { Component } from 'solid-js';
+import type { Component } from 'solid-js';
 import styles from './RuleItem.module.css';
 import copyIcon from '../icons/rss-copy';
 import type { Rule } from '../rsshub-rules';
@@ -10,22 +9,22 @@ interface RuleItemProps {
   onCopy?: (success: boolean) => void;
 }
 
-const RuleItem: Component<RuleItemProps> = (props) => {
-  const link = props.rule.genLink(props.params);
+const RuleItem: Component<RuleItemProps> = props => {
+  const getLink = () => props.rule.genLink(props.params);
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(link);
-      console.log('复制成功，触发 onCopy');
+      await navigator.clipboard.writeText(getLink());
       props.onCopy?.(true);
     } catch {
-      console.log('复制失败，触发 onCopy');
       props.onCopy?.(false);
     }
   };
   return (
     <div class={styles.ruleItem}>
       <div class={styles.ruleTitle}>
-        <a href={props.rule.doc} target="_blank" rel="noopener">{props.rule.name}</a>
+        <a href={props.rule.doc} target="_blank" rel="noopener">
+          {props.rule.name}
+        </a>
       </div>
       <div class={styles.ruleDesc}>{props.rule.desc}</div>
       <button
@@ -34,7 +33,7 @@ const RuleItem: Component<RuleItemProps> = (props) => {
         type="button"
         onClick={handleCopy}
       >
-        <span class={styles.ruleLink}>{link}</span>
+        <span class={styles.ruleLink}>{getLink()}</span>
         <span class={styles.copyIcon} innerHTML={copyIcon} />
       </button>
     </div>

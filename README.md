@@ -17,28 +17,33 @@
 ## 🎪 支持平台
 
 ### Bilibili
+
 - UP主投稿
-- UP主所有视频  
+- UP主所有视频
 - 排行榜
 - 每周推荐
 
 ### YouTube
+
 - 频道订阅（@handle）
 - 播放列表
 
 ### X (Twitter)
+
 - 用户推文
 - 自定义参数
 
-*更多平台正在添加中...*
+_更多平台正在添加中..._
 
 ## 🚀 安装使用
 
 ### 方式一：从 Release 安装（推荐）
+
 1. 安装用户脚本管理器：[Tampermonkey](https://tampermonkey.net/) 或 [Violentmonkey](https://violentmonkey.github.io/)
 2. 点击安装：[📦 安装 RSSHub Monkey Helper](https://github.com/chlorinec/rsshub-monkey-helper/releases/latest/download/rsshub-monkey-helper.user.js)
 
 ### 方式二：从源码构建
+
 ```bash
 # 克隆仓库
 git clone https://github.com/chlorinec/rsshub-monkey-helper.git
@@ -64,12 +69,14 @@ bun run build
 ## 🛠️ 开发指南
 
 ### 技术栈
+
 - **框架**：SolidJS - 高性能响应式 UI 框架
 - **构建**：Vite + vite-plugin-monkey - 现代化构建工具
 - **语言**：TypeScript - 类型安全
 - **样式**：CSS Modules - 组件化样式
 
 ### 本地开发
+
 ```bash
 # 开发模式（热重载）
 bun dev
@@ -82,6 +89,7 @@ bun preview
 ```
 
 ### 项目结构
+
 ```
 src/
 ├── components/          # UI 组件
@@ -97,6 +105,7 @@ src/
 ### 添加新平台支持
 
 1. 在 `src/rsshub-rules.ts` 中添加平台配置：
+
 ```typescript
 {
   id: 'new-platform',
@@ -116,6 +125,7 @@ src/
 ```
 
 2. 在 `src/platform-detectors.ts` 中添加检测逻辑：
+
 ```typescript
 export function detectParams(platformId: Platform): Record<string, string> {
   switch (platformId) {
@@ -132,12 +142,14 @@ export function detectParams(platformId: Platform): Record<string, string> {
 欢迎提交 Issue 和 Pull Request！
 
 ### 提交 Issue
+
 - 🐛 Bug 报告
-- ✨ 功能请求  
+- ✨ 功能请求
 - 📝 文档改进
 - ❓ 使用问题
 
 ### 提交 PR
+
 1. Fork 本仓库
 2. 创建功能分支：`git checkout -b feature/new-feature`
 3. 推送分支：`git push origin feature/new-feature`

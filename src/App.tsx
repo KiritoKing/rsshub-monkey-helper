@@ -1,27 +1,31 @@
-
-import { Component, createSignal, Show, onMount } from 'solid-js';
+import type { Component } from 'solid-js';
+import { createSignal, Show, onMount } from 'solid-js';
 import styles from './App.module.css';
-import { platforms, PlatformConfig } from './rsshub-rules';
+import type { PlatformConfig } from './rsshub-rules';
+import { platforms } from './rsshub-rules';
 import { detectParams } from './platform-detectors';
 
 import rsshubLogo from './icons/rsshub-logo';
 
-
 import Panel from './components/Panel';
 
 const [showPanel, setShowPanel] = createSignal(false);
-const [activePlatform, setActivePlatform] = createSignal<PlatformConfig>(platforms[0]);
+const [activePlatform, setActivePlatform] = createSignal<PlatformConfig>(
+  platforms[0]
+);
 const [toast, setToast] = createSignal('');
 
 // 自动识别当前平台（简化：根据host判断）
 function detectPlatform(): PlatformConfig | null {
   const host = window.location.host;
-  if (host.includes('bilibili.com')) return platforms.find(p => p.id === 'bilibili')!;
-  if (host.includes('youtube.com')) return platforms.find(p => p.id === 'youtube')!;
-  if (host.includes('twitter.com') || host.includes('x.com')) return platforms.find(p => p.id === 'x')!;
+  if (host.includes('bilibili.com'))
+    return platforms.find(p => p.id === 'bilibili') || null;
+  if (host.includes('youtube.com'))
+    return platforms.find(p => p.id === 'youtube') || null;
+  if (host.includes('twitter.com') || host.includes('x.com'))
+    return platforms.find(p => p.id === 'x') || null;
   return null;
 }
-
 
 const App: Component = () => {
   // 当前平台参数
@@ -46,16 +50,15 @@ const App: Component = () => {
     setShowAllPlatforms(true); // 一旦手动切换，自动展开所有平台tab
   };
 
-
   // 过滤出有数据的规则
-  const matchedRules = () => activePlatform().rules.filter(rule => {
-    const link = rule.genLink(params());
-    // 只要有参数被填充（不含占位符）
-    return !/\{.+?\}/.test(link);
-  });
+  const matchedRules = () =>
+    activePlatform().rules.filter(rule => {
+      const link = rule.genLink(params());
+      // 只要有参数被填充（不含占位符）
+      return !/\{.+?\}/.test(link);
+    });
   // 若无任何规则匹配，则不显示fab
-  if (matchedRules().length === 0) return null;
-
+  // 不再在组件体内直接 return null，交由 Show 控制渲染
 
   // 关闭对话框（点击外部或按钮）
   const handleClose = () => setShowPanel(false);
@@ -68,7 +71,11 @@ const App: Component = () => {
     <>
       {/* 悬浮按钮，仅有匹配规则时显示 */}
       <Show when={matchedRules().length > 0 && !showPanel()}>
-        <div class={styles.fab} onClick={() => setShowPanel(true)} title="RSSHub订阅">
+        <div
+          class={styles.fab}
+          onClick={() => setShowPanel(true)}
+          title="RSSHub订阅"
+        >
           <span innerHTML={rsshubLogo} />
         </div>
       </Show>
@@ -84,7 +91,6 @@ const App: Component = () => {
           onClose={handleClose}
           onBgClick={onBgClick}
           onCopy={success => {
-            console.log('App onCopy 回调', success);
             setToast(success ? '已复制' : '复制失败');
             setTimeout(() => setToast(''), 1200);
           }}

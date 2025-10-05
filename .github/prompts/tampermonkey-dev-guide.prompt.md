@@ -1,7 +1,8 @@
 ---
 mode: agent
 ---
-<!-- 
+
+<!--
 title: Tampermonkey 油猴脚本开发最佳实践指南
 description: 基于官方文档和社区最佳实践的油猴脚本开发规范指导
 -->
@@ -17,6 +18,7 @@ description: 基于官方文档和社区最佳实践的油猴脚本开发规范�
 ### 1. 元数据规范 (Metadata Block)
 
 #### 必填字段
+
 ```javascript
 // ==UserScript==
 // @name         脚本名称 (清晰描述功能)
@@ -30,6 +32,7 @@ description: 基于官方文档和社区最佳实践的油猴脚本开发规范�
 ```
 
 #### 推荐字段
+
 ```javascript
 // @icon          脚本图标 (64x64 PNG)
 // @homepage      项目主页
@@ -45,6 +48,7 @@ description: 基于官方文档和社区最佳实践的油猴脚本开发规范�
 ```
 
 #### 国际化支持
+
 ```javascript
 // @name:en       English Name
 // @name:zh-CN    中文名称
@@ -56,6 +60,7 @@ description: 基于官方文档和社区最佳实践的油猴脚本开发规范�
 ### 2. 安全最佳实践
 
 #### 权限最小化原则
+
 ```javascript
 // ❌ 避免过度授权
 // @grant        *
@@ -68,6 +73,7 @@ description: 基于官方文档和社区最佳实践的油猴脚本开发规范�
 ```
 
 #### 网络请求安全
+
 ```javascript
 // @connect      example.com        // 明确声明允许连接的域名
 // @connect      self               // 当前域名
@@ -76,11 +82,12 @@ description: 基于官方文档和社区最佳实践的油猴脚本开发规范�
 ```
 
 #### 内容安全策略 (CSP) 遵循
+
 ```javascript
 // 使用 GM_addElement 替代直接 DOM 操作
 GM_addElement('script', {
   src: 'https://cdn.example.com/lib.js',
-  type: 'text/javascript'
+  type: 'text/javascript',
 });
 
 // 使用 GM_addStyle 添加样式
@@ -94,6 +101,7 @@ GM_addStyle(`
 ### 3. 代码质量标准
 
 #### 错误处理
+
 ```javascript
 try {
   // 主要功能代码
@@ -116,6 +124,7 @@ async function fetchData(url) {
 ```
 
 #### 性能优化
+
 ```javascript
 // 使用防抖避免频繁执行
 function debounce(func, wait) {
@@ -131,21 +140,24 @@ function debounce(func, wait) {
 }
 
 // 观察器模式监听DOM变化
-const observer = new MutationObserver(debounce((mutations) => {
-  mutations.forEach(mutation => {
-    if (mutation.type === 'childList') {
-      // 处理DOM变化
-    }
-  });
-}, 300));
+const observer = new MutationObserver(
+  debounce(mutations => {
+    mutations.forEach(mutation => {
+      if (mutation.type === 'childList') {
+        // 处理DOM变化
+      }
+    });
+  }, 300)
+);
 
 observer.observe(document.body, {
   childList: true,
-  subtree: true
+  subtree: true,
 });
 ```
 
 #### 兼容性考虑
+
 ```javascript
 // 检测用户脚本管理器
 function getUserScriptManager() {
@@ -168,6 +180,7 @@ function setValue(key, value) {
 ### 4. 用户体验优化
 
 #### 界面注入最佳实践
+
 ```javascript
 // 等待DOM加载完成
 function waitForElement(selector, timeout = 5000) {
@@ -178,7 +191,7 @@ function waitForElement(selector, timeout = 5000) {
       return;
     }
 
-    const observer = new MutationObserver((mutations) => {
+    const observer = new MutationObserver(mutations => {
       const element = document.querySelector(selector);
       if (element) {
         observer.disconnect();
@@ -188,7 +201,7 @@ function waitForElement(selector, timeout = 5000) {
 
     observer.observe(document.body, {
       childList: true,
-      subtree: true
+      subtree: true,
     });
 
     setTimeout(() => {
@@ -206,6 +219,7 @@ waitForElement('.target-class').then(element => {
 ```
 
 #### 设置界面实现
+
 ```javascript
 // 创建设置面板
 function createSettingsPanel() {
@@ -223,31 +237,31 @@ function createSettingsPanel() {
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       z-index: 10000;
       font-family: Arial, sans-serif;
-    `
+    `,
   });
 
   // 添加设置选项
   const settings = [
     { key: 'enabled', label: '启用脚本', type: 'checkbox' },
-    { key: 'theme', label: '主题', type: 'select', options: ['light', 'dark'] }
+    { key: 'theme', label: '主题', type: 'select', options: ['light', 'dark'] },
   ];
 
   settings.forEach(setting => {
     const container = GM_addElement(panel, 'div', {
-      style: 'margin-bottom: 10px;'
+      style: 'margin-bottom: 10px;',
     });
 
     GM_addElement(container, 'label', {
       textContent: setting.label,
-      style: 'display: block; margin-bottom: 5px;'
+      style: 'display: block; margin-bottom: 5px;',
     });
 
     if (setting.type === 'checkbox') {
       const checkbox = GM_addElement(container, 'input', {
         type: 'checkbox',
-        checked: GM_getValue(setting.key, false)
+        checked: GM_getValue(setting.key, false),
       });
-      
+
       checkbox.addEventListener('change', () => {
         GM_setValue(setting.key, checkbox.checked);
       });
@@ -262,6 +276,7 @@ GM_registerMenuCommand('设置', createSettingsPanel);
 ### 5. 版本管理和发布
 
 #### 版本号规范
+
 ```javascript
 // 遵循语义化版本 (Semantic Versioning)
 // @version     1.2.3
@@ -277,6 +292,7 @@ GM_registerMenuCommand('设置', createSettingsPanel);
 ```
 
 #### 更新机制
+
 ```javascript
 // 自动更新配置
 // @updateURL    https://example.com/script.meta.js
@@ -288,18 +304,18 @@ function checkForUpdates() {
   GM_xmlhttpRequest({
     method: 'GET',
     url: 'https://api.github.com/repos/user/repo/releases/latest',
-    onload: function(response) {
+    onload: function (response) {
       const data = JSON.parse(response.responseText);
       const latestVersion = data.tag_name.replace('v', '');
-      
+
       if (compareVersions(currentVersion, latestVersion) < 0) {
         GM_notification({
           text: `发现新版本 ${latestVersion}，点击更新`,
           title: '脚本更新',
-          onclick: () => window.open(data.html_url)
+          onclick: () => window.open(data.html_url),
         });
       }
-    }
+    },
   });
 }
 ```
@@ -307,6 +323,7 @@ function checkForUpdates() {
 ### 6. 调试和测试
 
 #### 调试工具
+
 ```javascript
 // 开发模式检测
 const isDev = GM_getValue('debug_mode', false);
@@ -319,7 +336,7 @@ function debugLog(...args) {
 
 // 性能监控
 function performanceWrapper(fn, name) {
-  return function(...args) {
+  return function (...args) {
     const start = performance.now();
     const result = fn.apply(this, args);
     const end = performance.now();
@@ -330,6 +347,7 @@ function performanceWrapper(fn, name) {
 ```
 
 #### 测试检查清单
+
 - [ ] 在不同浏览器中测试 (Chrome, Firefox, Safari, Edge)
 - [ ] 验证不同用户脚本管理器兼容性 (Tampermonkey, Violentmonkey, Greasemonkey)
 - [ ] 测试网络连接失败情况
@@ -341,31 +359,39 @@ function performanceWrapper(fn, name) {
 ### 7. 文档和社区
 
 #### README 模板
+
 ```markdown
 # 脚本名称
 
 ## 功能描述
+
 简要说明脚本的主要功能和用途
 
 ## 安装方法
+
 1. 安装用户脚本管理器
 2. 点击安装链接
 3. 确认安装
 
 ## 使用说明
+
 详细的使用步骤和注意事项
 
 ## 兼容性
+
 - 浏览器支持: Chrome 80+, Firefox 75+, Safari 13+
 - 脚本管理器: Tampermonkey, Violentmonkey
 
 ## 更新日志
+
 详细的版本更新记录
 
 ## 许可证
+
 开源许可证信息
 
 ## 支持
+
 问题反馈和支持渠道
 ```
 
@@ -398,4 +424,4 @@ function performanceWrapper(fn, name) {
 
 ---
 
-*本指南基于官方文档和社区最佳实践编写，定期更新以保持与最新标准同步。*
+_本指南基于官方文档和社区最佳实践编写，定期更新以保持与最新标准同步。_
