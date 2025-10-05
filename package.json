@@ -1,7 +1,7 @@
 {
   "name": "rsshub-monkey-helper",
   "private": false,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "快速生成并复制RSSHub订阅链接，支持Bilibili、YouTube、X等主流平台的浏览器用户脚本",
   "keywords": [
