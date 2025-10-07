@@ -16,6 +16,9 @@ jobs:
     needs: ci
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
@@ -53,3 +56,24 @@ jobs:
           asset_path: ./dist/rsshub-monkey-helper.user.js
           asset_name: rsshub-monkey-helper.user.js
           asset_content_type: application/javascript
+
+      - name: Trigger Greasy Fork Webhook
+        run: |
+          curl -X POST https://greasyfork.org/zh-CN/users/1474434-kirito-chen/webhook \
+            -H "Content-Type: application/json" \
+            -H "X-GitHub-Event: release" \
+            -d '{
+              "action": "published",
+              "release": {
+                "tag_name": "v${{ steps.package-version.outputs.version }}",
+                "assets": [
+                  {
+                    "name": "rsshub-monkey-helper.user.js",
+                    "browser_download_url": "https://github.com/${{ github.repository }}/releases/download/v${{ steps.package-version.outputs.version }}/rsshub-monkey-helper.user.js"
+                  }
+                ]
+              },
+              "repository": {
+                "full_name": "${{ github.repository }}"
+              }
+            }'
